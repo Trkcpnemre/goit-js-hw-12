@@ -7,7 +7,7 @@ export const fetchPhotosByQuery = async (q, currentPage) => {
     const searchParams = {
       q,
       page: currentPage,
-      key: '49370474-a1716903616cca1a00d36cfab',
+      key: '50407836-8adbdb7013dbe19a53a013547',
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
