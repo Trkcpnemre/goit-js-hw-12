@@ -1,4 +1,8 @@
+// src/js/render-functions.js
 import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+const gallery = document.querySelector('.js-gallery');
 
 const createGalleryCardTemplate = ({
   largeImageURL,
@@ -11,8 +15,8 @@ const createGalleryCardTemplate = ({
 }) => {
   return `
     <div class="gallery-wrapper">
-        <a class="gallery-link" href="${largeImageURL}">
-        <img class="gallery-image" src="${webformatURL}" alt="${tags}">
+      <a class="gallery-link" href="${largeImageURL}">
+        <img class="gallery-image" src="${webformatURL}" alt="${tags}" />
         <ul class="gallery-info-list">
           <li class="gallery-info-item">
             <p class="gallery-info-title">Likes</p>
@@ -31,16 +35,18 @@ const createGalleryCardTemplate = ({
             <p class="gallery-info-value">${downloads}</p>
           </li>
         </ul>
-        </a>
-      </div>
-    `;
+      </a>
+    </div>
+  `;
 };
 
-export const galleryCardsTemplate = items =>
+const galleryCardsTemplate = items =>
   items.map(item => createGalleryCardTemplate(item)).join('');
 
-export const lightbox = new SimpleLightbox('.gallery a', {
+const lightbox = new SimpleLightbox('.js-gallery a', {
   captions: true,
   captionDelay: 250,
   captionsData: 'alt',
 });
+
+export { galleryCardsTemplate, lightbox };
