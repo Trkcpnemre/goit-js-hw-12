@@ -14,8 +14,13 @@ export const fetchPhotosByQuery = async (q, currentPage) => {
       per_page: 15,
     };
 
-    return await axios.get('', { params: searchParams });
+    const response = await axios.get('', { params: searchParams });
+    return {
+      images: response.data.hits,
+      total: response.data.totalHits,
+    };
   } catch (error) {
     console.log(error.message);
+    return { images: [], total: 0 };
   }
 };

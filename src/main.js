@@ -1,11 +1,10 @@
 import iziToast from 'izitoast';
-
 import { galleryCardsTemplate, lightbox } from './js/render-functions';
 import { fetchPhotosByQuery } from './js/pixabay-api';
 
 const refs = {
   searchForm: document.querySelector('.form'),
-  gallery: document.querySelector('.js-gallery'),
+  gallery: document.querySelector('.gallery'),
   loader: document.querySelector('.loader'),
   btnLoadMore: document.querySelector('.btn-load-more'),
 };
@@ -16,54 +15,46 @@ let currentPage;
 let searchQuery;
 let elemHeight;
 
-refs.loader.style.display = 'none';
-
 function showLoader() {
-  refs.loader.style.display = 'block';
+  refs.loader.classList.remove('hidden');
 }
 
 function hideLoader() {
-  refs.loader.style.display = 'none';
+  refs.loader.classList.add('hidden');
 }
 
 const onSearchFormSubmit = async event => {
-  try {
-    event.preventDefault();
+  event.preventDefault();
 
-    currentPage = 1;
-    refs.gallery.innerHTML = '';
+  currentPage = 1;
+  refs.gallery.innerHTML = '';
+  refs.btnLoadMore.classList.remove('is-visible');
+
+  searchQuery = event.currentTarget.elements.search_text.value.trim();
+
+  if (searchQuery === '') {
+    iziToast.error({
+      title: 'Error',
+      message: 'Input cannot be empty!',
+      position: 'topRight',
+    });
     refs.btnLoadMore.classList.remove('is-visible');
+    event.currentTarget.elements.search_text.value = '';
+    return;
+  }
 
-    searchQuery = event.currentTarget.elements.search_text.value.trim();
-
-    if (searchQuery === '') {
-      iziToast.error({
-        title: 'Error',
-        message: `Input cannot be empty!`,
-        position: 'topRight',
-      });
-
-      refs.btnLoadMore.classList.remove('is-visible');
-      event.currentTarget.elements.search_text.value = '';
-
-      return;
-    }
-
-    showLoader();
-    const {
-      data: { hits: images },
-    } = await fetchPhotosByQuery(searchQuery, currentPage);
+  showLoader();
+  try {
+    const { images, total } = await fetchPhotosByQuery(searchQuery, currentPage);
 
     if (images.length === 0) {
       iziToast.error({
         title: 'Error',
-        message: `Sorry, there are no images matching your search query. Please try again!`,
+        message: 'Sorry, there are no images matching your search query. Please try again!',
         position: 'topRight',
       });
-
       refs.searchForm.reset();
       refs.btnLoadMore.classList.remove('is-visible');
-
       return;
     }
 
@@ -77,9 +68,10 @@ const onSearchFormSubmit = async event => {
       refs.btnLoadMore.classList.add('is-visible');
     }
 
-    elemHeight = document
-      .querySelector('.gallery-wrapper')
-      .getBoundingClientRect().height;
+    const firstCard = document.querySelector('.gallery-wrapper');
+    if (firstCard) {
+      elemHeight = firstCard.getBoundingClientRect().height;
+    }
   } catch (error) {
     iziToast.error({ title: 'Error', message: error.message });
   } finally {
@@ -88,11 +80,9 @@ const onSearchFormSubmit = async event => {
 };
 
 const onBtnLoadMoreClick = async () => {
+  showLoader();
   try {
-    showLoader();
-    const {
-      data: { totalHits, hits: images },
-    } = await fetchPhotosByQuery(searchQuery, currentPage);
+    const { images, total } = await fetchPhotosByQuery(searchQuery, currentPage);
 
     refs.gallery.insertAdjacentHTML('beforeend', galleryCardsTemplate(images));
     lightbox.refresh();
@@ -103,14 +93,13 @@ const onBtnLoadMoreClick = async () => {
       behavior: 'smooth',
     });
 
-    totalPages = Math.ceil(totalHits / itemsPerPage);
+    totalPages = Math.ceil(total / itemsPerPage);
 
     if (currentPage === totalPages || images.length < itemsPerPage) {
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
         position: 'topRight',
       });
-
       refs.btnLoadMore.classList.remove('is-visible');
       return;
     }
@@ -122,7 +111,6 @@ const onBtnLoadMoreClick = async () => {
       message: error.message,
       position: 'topRight',
     });
-
     console.log(error.message);
   } finally {
     hideLoader();

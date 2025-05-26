@@ -5,12 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GoIt HW № 12</title>
-
-    <!-- Fonts & Reset -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
     <link
@@ -20,8 +18,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
@@ -34,23 +30,15 @@
             name="search_text"
             placeholder="Search images..."
             required
+            autocomplete="off"
           />
         </label>
         <button class="btn form-btn" type="submit">Search</button>
       </form>
     </div>
-
-    <ul class="gallery js-gallery"></ul>
-
-    <!-- Load More button -->
-    <div class="load-more-container">
-      <button class="btn btn-load-more hidden" type="button">Load more</button>
-    </div>
-
-    <!-- Loader -->
+    <ul class="gallery"></ul>
+    <button class="btn btn-load-more" type="button">Load more</button>
     <span class="loader hidden"></span>
-
-    <!-- Main JS -->
     <script type="module" src="./main.js"></script>
   </body>
 </html>

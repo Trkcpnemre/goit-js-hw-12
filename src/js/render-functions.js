@@ -1,8 +1,4 @@
-// src/js/render-functions.js
 import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-
-const gallery = document.querySelector('.js-gallery');
 
 const createGalleryCardTemplate = ({
   largeImageURL,
@@ -16,7 +12,7 @@ const createGalleryCardTemplate = ({
   return `
     <div class="gallery-wrapper">
       <a class="gallery-link" href="${largeImageURL}">
-        <img class="gallery-image" src="${webformatURL}" alt="${tags}" />
+        <img class="gallery-image" src="${webformatURL}" alt="${tags}">
         <ul class="gallery-info-list">
           <li class="gallery-info-item">
             <p class="gallery-info-title">Likes</p>
@@ -40,13 +36,41 @@ const createGalleryCardTemplate = ({
   `;
 };
 
-const galleryCardsTemplate = items =>
+export const galleryCardsTemplate = items =>
   items.map(item => createGalleryCardTemplate(item)).join('');
 
-const lightbox = new SimpleLightbox('.js-gallery a', {
+export const lightbox = new SimpleLightbox('.gallery a', {
   captions: true,
   captionDelay: 250,
   captionsData: 'alt',
 });
 
-export { galleryCardsTemplate, lightbox };
+// DOM elemanlarını seç
+const galleryContainer = document.querySelector('.gallery');
+const loader = document.querySelector('.loader');
+const loadMoreBtn = document.querySelector('.btn-load-more');
+
+export function renderGallery(items) {
+  galleryContainer.insertAdjacentHTML('beforeend', galleryCardsTemplate(items));
+  lightbox.refresh();
+}
+
+export function clearGallery() {
+  galleryContainer.innerHTML = '';
+}
+
+export function showLoader() {
+  if (loader) loader.classList.remove('hidden');
+}
+
+export function hideLoader() {
+  if (loader) loader.classList.add('hidden');
+}
+
+export function showLoadMoreBtn() {
+  if (loadMoreBtn) loadMoreBtn.classList.add('is-visible');
+}
+
+export function hideLoadMoreBtn() {
+  if (loadMoreBtn) loadMoreBtn.classList.remove('is-visible');
+}
